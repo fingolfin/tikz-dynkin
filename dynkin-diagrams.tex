@@ -1,0 +1,248 @@
+\documentclass[a4paper,10pt]{scrartcl}
+\usepackage[margin=2cm]{geometry}
+\usepackage{multicol}
+
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows,decorations.markings}
+
+\begin{document}
+
+
+% Max' Tikz styles for dynkin diagrams
+\tikzset{
+  % a diagram node
+  dnode/.style={thick,circle,inner sep=0pt,minimum size=3.5mm,fill=white,draw},
+%
+% TODO: 
+  middlearrow/.style={
+    decoration={markings,
+      mark=at position 0.6 with {
+        \draw (0:0mm) -- +(+140:3mm);
+        \draw (0:0mm) -- +(-140:3mm);
+      },
+    },
+    postaction={decorate}
+  },
+  % single edge
+  sedge/.style={
+    thick,
+  },
+  % directed double edge
+  dedge/.style={
+    thick,
+    double=white,double distance=0.5mm,
+    middlearrow,
+  },
+  % directed triple edge
+  tedge/.style={
+    thick,
+    double=white,double distance=1.0mm+\pgflinewidth,
+    postaction={draw}, % third line
+    middlearrow,
+  },
+}
+
+%
+%
+%
+\section{Random example}
+
+This example show cases most options: 
+single edges,
+(directed) multi edges, colored nodes, double nodes, node labels, edge labels.
+
+\begin{center}
+  \begin{tikzpicture}
+    \node[dnode,label=below:$A$] (A) at (0,0) {};
+    \node[dnode,label=below:$B$] (B) at (1,0) {};
+    \node[dnode] (C) at (2,0) {};
+    \node[dnode,fill=green] (D) at (3,0) {};
+    \node[dnode,double] (E) at (2,2) {};
+    \node[dnode,fill=black] (F) at (4,3) {};
+    \node[dnode,label=above:{a long label}] (G) at (1,3) {};
+    \node[dnode] (H) at (6,2) {};
+
+    \path (A) edge[sedge] (B)
+ 		      edge[sedge] node[above left] {$\infty$} (G)
+          (B) edge[dedge] (C)
+          (C) edge[tedge] (D)
+          (D) edge[tedge] (E)
+          (F) edge[tedge] (E)
+          (F) edge[sedge,dashed] (H);
+  \end{tikzpicture}
+\end{center}
+
+
+%
+%
+%
+\section{Spherical diagrams}
+
+Here are the usual spherical diagrams with Bourbaki labelling:
+
+\begin{multicols}{2}
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$A_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[sedge] (2)
+          (2) edge[sedge,dashed] (3)
+          (3) edge[sedge] (4)
+          (4) edge[sedge] (5)
+          ;
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$B_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[sedge] (2)
+          (2) edge[sedge,dashed] (3)
+          (3) edge[sedge] (4)
+          (4) edge[dedge] (5)
+          ;
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$C_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[sedge] (2)
+          (2) edge[sedge,dashed] (3)
+          (3) edge[sedge] (4)
+          (5) edge[dedge] (4)
+          ;
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$D_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-3$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-2$] (4) at (4,0) {};
+    \node[dnode,label=above:$n-1$] (5) at (5,0.5) {};
+    \node[dnode,label=below:$n$] (6) at (5,-0.5) {};
+
+    \path (1) edge[sedge] (2)
+          (2) edge[sedge,dashed] (3)
+          (3) edge[sedge] (4)
+          (4) edge[sedge] (5)
+              edge[sedge] (6)
+          ;
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture} %[every node/.style={dnode}]
+    \draw (-1,0.5) node[anchor=east]  {$E_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=above:$2$] (2) at (2,1) {};
+    \node[dnode,label=below:$3$] (3) at (1,0) {};
+    \node[dnode,label=below:$4$] (4) at (2,0) {};
+    \node[dnode,label=below:$5$] (5) at (3,0) {};
+    \node[dnode,label=below:$6$] (6) at (4,0) {};
+    \node[dnode,label=below:$n$] (n) at (5,0) {};
+
+    \path (1) edge[sedge] (3)
+          (3) edge[sedge] (4)
+          (4) edge[sedge] (5)
+ 		      edge[sedge] (2)
+          (5) edge[sedge] (6)
+          (6) edge[sedge,dashed] (n);
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$F_4$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$3$] (3) at (2,0) {};
+    \node[dnode,label=below:$4$] (4) at (3,0) {};
+
+    \path (1) edge[sedge] (2)
+          (2) edge[dedge] (3)
+          (3) edge[sedge] (4)
+          ;
+\end{tikzpicture}
+
+\ 
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$G_2$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+
+    \path (2) edge[tedge] (1)
+          ;
+\end{tikzpicture}
+
+
+\end{multicols}
+
+
+%
+%
+%
+\section{Affine diagrams}
+
+\begin{multicols}{2}
+
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$\tilde{A}_1$};
+
+    \node[dnode] (1) at (0,0) {};
+    \node[dnode] (2) at (1,0) {};
+
+    \path (2) edge[sedge] node[above] {$\infty$} (1)
+          ;
+\end{tikzpicture}
+
+\end{multicols}
+
+
+%
+%
+%
+\section{TODO}
+
+\begin{itemize}
+\item make size of nodes configurable (needs tweaked middlearrow macro)
+\item even better: try to make it compatible with the ``scale=XYZ'' attribute
+\item draw edges using \verb|\begin{pgfonlayer}{background} ... \end{...}|  to avoid overdraw artifacts
+\item add more node styles: black; arbitrary color; perhaps a ``double circle
+\item make size more flexible
+\item allow for undirected double/triple nodes
+\item ...
+\end{itemize}
+
+
+
+\end{document}
