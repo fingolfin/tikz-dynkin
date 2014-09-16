@@ -4,7 +4,7 @@ tikz-dynkin
 The tikz-dynkin LaTeX package provides convenient tools
 for drawing Coxeter and Dynkin diagrams using TikZ
 
-The latest version can be found here:
+You can find the latest version can be found here:
 
   https://github.com/fingolfin/tikz-dynkin
 
@@ -12,8 +12,9 @@ The latest version can be found here:
 License
 -------
 
-tikz-dynkin, a LaTeX package for drawing Coxeter and Dynkin diagrams using TikZ
-Copyright (C) 2014   Max Horn
+tikz-dynkin, Dynkin diagrams with TikZ
+
+Copyright (C) 2014 by Max Horn
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

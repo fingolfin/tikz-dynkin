@@ -4,42 +4,69 @@
 
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,arrows,decorations.markings}
+\usetikzlibrary{arrows,decorations.markings}
+
+\usetikzlibrary{matrix}
+\usetikzlibrary{graphs}
+\usetikzlibrary{backgrounds}
 
 \begin{document}
 
 
 % Max' Tikz styles for dynkin diagrams
+\def\DynkinNodeSize{3.5mm}
+\def\DynkinArrowLength{3mm}
 \tikzset{
   % a diagram node
-  dnode/.style={thick,circle,inner sep=0pt,minimum size=3.5mm,fill=white,draw},
-%
-% TODO: 
+  dnode/.style={
+    circle,
+    inner sep=0pt,
+    minimum size=\DynkinNodeSize,
+    fill=white,
+    draw},
+  %
   middlearrow/.style={
     decoration={markings,
-      mark=at position 0.6 with {
-        \draw (0:0mm) -- +(+140:3mm);
-        \draw (0:0mm) -- +(-140:3mm);
+      mark=at position 0.6 with
+      %{\arrow[black]{angle 90};}
+      %{\arrow[black]{angle 60};}
+      %{\arrow[black]{stealth};}
+      {\draw (0:0mm) -- +(+135:\DynkinArrowLength); \draw (0:0mm) -- +(-135:\DynkinArrowLength);},
+    },
+    postaction={decorate}
+  },
+  %
+  leftrightarrow/.style={
+    decoration={markings,
+      mark=at position 0.999 with
+      {
+      \draw (0:0mm) -- +(+135:\DynkinArrowLength); \draw (0:0mm) -- +(-135:\DynkinArrowLength);
+      },
+      mark=at position 0.001 with
+      {
+      \draw (0:0mm) -- +(+45:\DynkinArrowLength); \draw (0:0mm) -- +(-45:\DynkinArrowLength);
       },
     },
     postaction={decorate}
   },
   % single edge
   sedge/.style={
-    thick,
   },
   % directed double edge
   dedge/.style={
-    thick,
-    double=white,double distance=0.5mm,
     middlearrow,
+    double distance=0.5mm,
   },
   % directed triple edge
   tedge/.style={
-    thick,
-    double=white,double distance=1.0mm+\pgflinewidth,
-    postaction={draw}, % third line
     middlearrow,
+    double distance=1.0mm+\pgflinewidth,
+    postaction={draw}, % third line
+  },
+  % double edge with two arrows, for \tilde{A}_1 residues
+  infedge/.style={
+    leftrightarrow,
+    double distance=0.5mm,
   },
 }
 
@@ -225,6 +252,16 @@ Here are the usual spherical diagrams with Bourbaki labelling:
           ;
 \end{tikzpicture}
 
+\begin{tikzpicture}%[every node/.style={dnode}]
+    \draw (-1,0) node[anchor=east]  {$\tilde{A}_1$};
+
+    \node[dnode] (1) at (0,0) {};
+    \node[dnode] (2) at (1,0) {};
+
+    \path (2) edge[infedge] (1)
+          ;
+\end{tikzpicture}
+
 \end{multicols}
 
 
@@ -236,13 +273,209 @@ Here are the usual spherical diagrams with Bourbaki labelling:
 \begin{itemize}
 \item make size of nodes configurable (needs tweaked middlearrow macro)
 \item even better: try to make it compatible with the ``scale=XYZ'' attribute
+\item perhaps base the sizes on the active font size?
 \item draw edges using \verb|\begin{pgfonlayer}{background} ... \end{...}|  to avoid overdraw artifacts
 \item add more node styles: black; arbitrary color; perhaps a ``double circle
 \item make size more flexible
 \item allow for undirected double/triple nodes
+\item Add macros for standard spherical / affine diagrams: both version for specific $n$ (e.g. for drawing
+$A_3$), and also the ones we show above, with unspecified $n$
+\item some people like to represent infinity edges by ``double arrows'', i.e. $\Leftrightarrow$
+\item Some people prefer double/triple edges where the outer two edges are tangential to the nodes
+\item Improve triple edges: right now, there is a tiny gap between the outer two edges and the node circles.
+Close that.
+\item Add examples which use other ways of placing nodes, e.g. a matrix
+\item another approach to arrows: draw them more like normal arrows, with the tip directly at the target node.
+\item another approach to arrows: draw them above the edges (and for infinity edges, draw one above and one below, pointing in opposite direction)
 \item ...
 \end{itemize}
 
+\subsection*{Alternate examples for linear diagrams}
 
+
+\begin{tikzpicture}
+    \draw (-1,0) node[anchor=east]  {$X_n$};
+    
+    % \dynkinnode[label=below:$1$] (a) at (0,2);
+    % \dynkinnode[label=below:$2$] (b) at (1,2);
+    
+    % Hypothetical syntax for purely linear, horizontal diagrams:
+    
+    %\dynkin  dnode[label=below:$1$]
+    %         edge[triple,reversed]
+    %         dnode[fill=green,label=below:$2$]
+    %         edge[dashed,long]
+    %         dnode
+    %         edge
+    %         dnode[label=below:$n-1$]
+    %         edge[double]
+    %         dnode[label=below:$n$]
+    
+    %
+    % Another idea: first name some coordinates, then
+    % place circle nodes on them, and then specify edges between them
+    %
+    \node[inner sep=0pt] (a) at (0,1) {};
+    \draw (a) node[dnode,label=below:$1$] {};
+
+    \node[inner sep=0pt] (b) at (1,1) {};
+    \draw (b) node[dnode,fill=green,label=below:$2$] {};
+
+    \node[inner sep=0pt] (c) at (3,1) {};
+    \draw (c) node[dnode] {};
+
+    \node[inner sep=0pt] (d) at (4,1) {};
+    \draw (d) node[dnode,label=below:$n-1$] {};
+
+    \node[inner sep=0pt] (e) at (5,1) {};
+    \draw (e) node[dnode,label=below:$n$] {};
+
+    \begin{scope}[on background layer]
+    \path (b) edge[tedge] (a)
+          (b) edge[sedge,dashed] (c)
+          (c) edge[sedge] (d)
+          (d) edge[dedge] (e)
+          ;
+    \end{scope}
+
+
+
+%    \draw (0,3) [tedge] -- ++(1,0);
+%    \draw (0,3) node[dnode,label=below:$1$] {};
+%
+%    \draw (0,2) node[dnode,label=below:$1$] {}
+%          [tedge] -- ++(1,0) node[dnode,label=below:$2$] {};
+%    
+%    \draw (0,1) node[dnode,label=below:$1$] {}
+%          [tedge] -- ++(1,0) node[dnode,label=below:$2$] {} 
+%          {[sedge, dashed] -- ++(2,0)} node[dnode] {}
+%          {[sedge] -- ++(1,0)} node[dnode,label=below:$n-1$] {}
+%          {[dedge] -- ++(1,0)} node[dnode,label=below:$n$] {} ;
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,fill=green,label=below:$2$] (2) at (1,0) {};
+    \node[dnode] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (2) edge[tedge] (1)
+          (2) edge[sedge,dashed] (3)
+          (3) edge[sedge] (4)
+          (4) edge[dedge] (5)
+          ;
+\end{tikzpicture}
+
+%\begin{tikzpicture}
+%
+%    \draw (-1,0) node[anchor=east]  {$X_n$};
+%
+%\matrix (dynk) [matrix of nodes,nodes in empty cells,anchor=west,column sep=6mm]  at (-0.7,0) {
+%%    \node[anchor=east] {$X_n$}; & 
+%    \node[dnode,label=below:$1$] {}; p1 &
+%    \node[dnode,label=below:$2$] {}; p2 & &
+%    \node[dnode] {}; p3 &
+%    \node[dnode,label=below:$n-1$] {}; p4 &
+%    \node[dnode,label=below:$n$] {}; p5 \\
+%  };
+%
+%    \path (dynk-1-2) edge[tedge] (dynk-1-1)
+%          (dynk-1-2) edge[sedge,dashed] (dynk-1-3)
+%          (dynk-1-3) edge[sedge] (dynk-1-4)
+%          (dynk-1-4) edge[dedge] (dynk-1-5)
+%          ;
+%
+%\end{tikzpicture}
+
+\tikz \graph [grow right, branch right] {
+  A -> B -> C;
+};
+
+\subsection*{Deal with scaling}
+
+\begin{tikzpicture}[scale=0.5]
+    \draw (-1,0) node[anchor=east]  {$X_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[tedge] (2)
+          (2) edge[sedge,middlearrow] (3)
+          (3) edge[sedge] (4)
+          (4) edge[dedge] (5)
+          ;
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[scale=1.0]
+    \draw (-1,0) node[anchor=east]  {$X_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[tedge] (2)
+          (2) edge[sedge,middlearrow] (3)
+          (3) edge[sedge] (4)
+          (4) edge[dedge] (5)
+          ;
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[scale=2,thick]
+    \draw (-1,0) node[anchor=east]  {$X_n$};
+
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,0) {};
+    \node[dnode,label=below:$n-2$] (3) at (3,0) {};
+    \node[dnode,label=below:$n-1$] (4) at (4,0) {};
+    \node[dnode,label=below:$n$] (5) at (5,0) {};
+
+    \path (1) edge[tedge] (2)
+          (2) edge[sedge,middlearrow] (3)
+          (3) edge[sedge] (4)
+          (4) edge[dedge] (5)
+          ;
+
+\end{tikzpicture}
+
+
+
+\subsection*{Alternate ways of drawing triple edges}
+
+
+\tikzset{
+    triple/.style args={[#1] in [#2] in [#3]}{
+        #1,preaction={preaction={draw,#3},draw,#2}
+    }
+}        
+\begin{tikzpicture}
+  \draw[triple={[line width=1mm,red] in
+      [line width=2mm,white] in
+      [line width=4mm,black]}] (3,3) to (5,5);
+
+    \draw (-1,0) node[anchor=east]  {$X_n$};
+
+    %\node[label=below:$1$] (1) at (0,0) {};
+    %\node[label=below:$2$] (2) at (1,1) {};
+    \node[dnode,label=below:$1$] (1) at (0,0) {};
+    \node[dnode,label=below:$2$] (2) at (1,1) {};
+
+%  \draw[triple={[line width=1mm,red] in
+%      [line width=2mm,white] in
+%      [line width=4mm,black]}] (1) to (2);
+
+%  \path (1) edge[triple={[line width=1mm,red] in
+%      [line width=2mm,white] in
+%      [line width=4mm,black]}] (2);
+
+  \path (1) edge[line width=3mm] (2);
+
+
+\end{tikzpicture}
 
 \end{document}
